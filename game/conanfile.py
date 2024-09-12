@@ -8,11 +8,10 @@ class gameRecipe(ConanFile):
     package_type = "application"
 
     # Optional metadata
-    license = "<Put the package license here>"
-    author = "<Put your name here> <And your email here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of game package here>"
-    topics = ("<Put some tag here>", "<here>", "<and here>")
+    license = "MIT"
+    author = "Norbert Bukuli"
+    url = "-"
+    description = "top of the graph"
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
@@ -37,7 +36,3 @@ class gameRecipe(ConanFile):
     def package(self):
         cmake = CMake(self)
         cmake.install()
-
-    
-
-    
