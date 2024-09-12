@@ -19,6 +19,10 @@ class gameRecipe(ConanFile):
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "src/*"
 
+    requires = [
+        "engine/1.0.0"
+    ]
+
     def layout(self):
         cmake_layout(self)
 

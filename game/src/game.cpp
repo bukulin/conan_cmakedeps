@@ -1,10 +1,12 @@
-#include <iostream>
 #include "game.h"
 
+#include "engine.h"
 
+#include <iostream>
 
 void game(){
-    
+
+	engine();
 
     #ifdef NDEBUG
     std::cout << "game/1.0.0: Hello World Release!\n";
@@ -114,7 +116,7 @@ void game(){
 }
 
 void game_print_vector(const std::vector<std::string> &strings) {
-    for(std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); ++it) {
-        std::cout << "game/1.0.0 " << *it << std::endl;
-    }
+	std::cout << ">> game_print_vector" << std::endl;
+	engine_print_vector(strings);
+	std::cout << "<< game_print_vector" << std::endl;
 }
