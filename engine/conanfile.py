@@ -8,16 +8,21 @@ class engineRecipe(ConanFile):
     package_type = "library"
 
     # Optional metadata
-    license = "<Put the package license here>"
-    author = "<Put your name here> <And your email here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of engine package here>"
-    topics = ("<Put some tag here>", "<here>", "<and here>")
+    license = "MIT"
+    author = "Norbert Bukuli"
+    url = "-"
+    description = "middle engine library"
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False]
+    }
+    default_options = {
+        "shared": False,
+        "fPIC": True
+    }
 
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
@@ -32,7 +37,7 @@ class engineRecipe(ConanFile):
 
     def layout(self):
         cmake_layout(self)
-    
+
     def generate(self):
         deps = CMakeDeps(self)
         deps.generate()
@@ -50,4 +55,3 @@ class engineRecipe(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["engine"]
-
