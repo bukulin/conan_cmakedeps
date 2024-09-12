@@ -1,10 +1,17 @@
-#include <iostream>
 #include "engine.h"
 
+#include <log4cxx/log4cxx.h>
+#include <log4cxx/basicconfigurator.h>
 
+#include <iostream>
+#include <log4cxx/logger.h>
+
+static auto logger = log4cxx::Logger::getLogger("engine");
 
 void engine(){
-    
+
+	log4cxx::BasicConfigurator::configure();
+	LOG4CXX_INFO(logger, "Entering engine");
 
     #ifdef NDEBUG
     std::cout << "engine/1.0.0: Hello World Release!\n";
