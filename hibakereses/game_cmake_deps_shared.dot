@@ -1,0 +1,55 @@
+digraph "game" {
+node [
+  fontsize = "12"
+];
+subgraph clusterLegend {
+  label = "Legend";
+  color = black;
+  edge [ style = invis ];
+  legendNode0 [ label = "Executable", shape = egg ];
+  legendNode1 [ label = "Static Library", shape = octagon ];
+  legendNode2 [ label = "Shared Library", shape = doubleoctagon ];
+  legendNode3 [ label = "Module Library", shape = tripleoctagon ];
+  legendNode4 [ label = "Interface Library", shape = pentagon ];
+  legendNode5 [ label = "Object Library", shape = hexagon ];
+  legendNode6 [ label = "Unknown Library", shape = septagon ];
+  legendNode7 [ label = "Custom Target", shape = box ];
+  legendNode0 -> legendNode1 [ style = solid ];
+  legendNode0 -> legendNode2 [ style = solid ];
+  legendNode0 -> legendNode3;
+  legendNode1 -> legendNode4 [ label = "Interface", style = dashed ];
+  legendNode2 -> legendNode5 [ label = "Private", style = dotted ];
+  legendNode3 -> legendNode6 [ style = solid ];
+  legendNode0 -> legendNode7;
+}
+    "node0" [ label = "game", shape = egg ];
+    "node1" [ label = "engine::engine", shape = pentagon ];
+    "node2" [ label = "CONAN_LIB::engine_engine_RELEASE", shape = doubleoctagon ];
+    "node3" [ label = "engine_DEPS_TARGET", shape = pentagon ];
+    "node4" [ label = "log4cxx", shape = pentagon ];
+    "node5" [ label = "log4cxx_DEPS_TARGET", shape = pentagon ];
+    "node6" [ label = "apr-util::apr-util", shape = pentagon ];
+    "node7" [ label = "apr-util_DEPS_TARGET", shape = pentagon ];
+    "node8" [ label = "Iconv::Iconv", shape = pentagon ];
+    "node9" [ label = "libiconv_DEPS_TARGET", shape = pentagon ];
+    "node8" -> "node9" [ style = dashed ] // Iconv::Iconv -> libiconv_DEPS_TARGET
+    "node7" -> "node8" [ style = dashed ] // apr-util_DEPS_TARGET -> Iconv::Iconv
+    "node10" [ label = "apr::apr", shape = pentagon ];
+    "node11" [ label = "apr_DEPS_TARGET", shape = pentagon ];
+    "node10" -> "node11" [ style = dashed ] // apr::apr -> apr_DEPS_TARGET
+    "node7" -> "node10" [ style = dashed ] // apr-util_DEPS_TARGET -> apr::apr
+    "node12" [ label = "expat::expat", shape = pentagon ];
+    "node13" [ label = "expat_DEPS_TARGET", shape = pentagon ];
+    "node14" [ label = "m", shape = septagon ];
+    "node13" -> "node14" [ style = dashed ] // expat_DEPS_TARGET -> m
+    "node12" -> "node13" [ style = dashed ] // expat::expat -> expat_DEPS_TARGET
+    "node7" -> "node12" [ style = dashed ] // apr-util_DEPS_TARGET -> expat::expat
+    "node6" -> "node7" [ style = dashed ] // apr-util::apr-util -> apr-util_DEPS_TARGET
+    "node5" -> "node6" [ style = dashed ] // log4cxx_DEPS_TARGET -> apr-util::apr-util
+    "node5" -> "node10" [ style = dashed ] // log4cxx_DEPS_TARGET -> apr::apr
+    "node4" -> "node5" [ style = dashed ] // log4cxx -> log4cxx_DEPS_TARGET
+    "node3" -> "node4" [ style = dashed ] // engine_DEPS_TARGET -> log4cxx
+    "node2" -> "node3" [ style = dashed ] // CONAN_LIB::engine_engine_RELEASE -> engine_DEPS_TARGET
+    "node1" -> "node2" [ style = dashed ] // engine::engine -> CONAN_LIB::engine_engine_RELEASE
+    "node0" -> "node1" [ style = dotted ] // game -> engine::engine
+}
