@@ -27,6 +27,8 @@ class gameRecipe(ConanFile):
         cmake_layout(self)
 
     def generate(self):
+        for ref, dep in self.dependencies.items():
+            self.output.warning(f">>>>>>>>>> {ref} -> {dep.package_type}")
         deps = CMakeDeps(self)
         deps.generate()
         tc = CMakeToolchain(self)
