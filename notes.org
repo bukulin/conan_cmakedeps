@@ -1,0 +1,14 @@
+* fuggosegi graf
+  game -> engine -> log4cxx
+** Forditas:
+  - alapbol csak a kozvetlen fuggosegek header fajljait latjuk
+    (``headers=True``), azaz a tranzitiv fuggosegek privat modon
+    jelentkeznek, csak a linkelesnel jatszanak szerepet (``libs=True``)
+  - publikus fuggoseg ugy allithato be (pl engine -> log4cxx
+    viszonylatban), ha megadjuk a ``transitive_libs=True`` requirement
+    trait-et
+** Linkeles
+  - ``shared=False`` esetben a kozvetlen es a tranzitiv fuggosegenel
+    is ``libs=True`` lesz
+  - ``shared=True`` esetben a kozvetlen fuggosegnel ``libs=True``, a
+    tranzitiv fuggosegeknel ``libs=False`` lesz.
