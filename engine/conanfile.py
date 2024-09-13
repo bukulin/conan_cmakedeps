@@ -51,6 +51,7 @@ class engineRecipe(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+        cmake.ctest(cli_args=["--output-on-failure"])
 
     def package(self):
         cmake = CMake(self)
