@@ -1,14 +1,55 @@
 * fuggosegi graf
-  game -> engine -> log4cxx
+  ~game~ -> ~engine~ -> ~log4cxx~ -> (egyebek)
+** Requirement trait-ek beallitasa
+  A ~package_type~ attributum, a ~shared~ es ~header_only~ opciok
+  valamit az explicit megadott requriement traitek befolyasoljak, hogy
+  a kozvetlen es tranzitiv fuggosegek hogyan alakulnak. Miket allitottunk be?
+  - ~log4cxx~
+    - ~package_type=library~
+    - ~option:shared~
+  - ~engine~
+    - ~package_type=library~
+    - ~option:shared~
+  - ~game~
+    - ~package_type=application~
+  A fentieken kivul nincs extra requriement trait, azaz mindenhol az
+  alapertelmezett ertekeket vesszuk.
 ** Forditas:
   - alapbol csak a kozvetlen fuggosegek header fajljait latjuk
-    (``headers=True``), azaz a tranzitiv fuggosegek privat modon
-    jelentkeznek, csak a linkelesnel jatszanak szerepet (``libs=True``)
+    (~headers=True~), azaz a tranzitiv fuggosegek privat modon
+    jelentkeznek, csak a linkelesnel jatszanak szerepet (~libs=True~)
   - publikus fuggoseg ugy allithato be (pl engine -> log4cxx
-    viszonylatban), ha megadjuk a ``transitive_libs=True`` requirement
+    viszonylatban), ha megadjuk a ~transitive_libs=True~ requirement
     trait-et
 ** Linkeles
-  - ``shared=False`` esetben a kozvetlen es a tranzitiv fuggosegenel
-    is ``libs=True`` lesz
-  - ``shared=True`` esetben a kozvetlen fuggosegnel ``libs=True``, a
-    tranzitiv fuggosegeknel ``libs=False`` lesz.
+  - ~shared=False~ esetben a kozvetlen es a tranzitiv fuggosegenel
+    is ~libs=True~ lesz
+  - ~shared=True~ esetben a kozvetlen fuggosegnel ~libs=True~, a
+    tranzitiv fuggosegeknel ~libs=False~ lesz.
+** Tranzitiv fuggosegek linkelesenek hibakeresese
+  - A ~conan graph info --format html -o '*:shared=False' . >
+    game_deps_static.html~ es hasonloan a shared=True eseten a
+    generalt html megjelenitesu grafbol semmi extra nem olvashato ki a
+    fentieken kivul.
+  - cmake graphviz fajlok-bol az latszik, hogy a ~*:shared=True~
+    eseten is csak az ~engine~ shared, a tobbi interface
+    lib. ~*:shared=False~ eseten lathato az ossze static lib, linkelni
+    kell oket.
+  - Forditasi parancssor:
+    - ~*:shared=False~: Az ~engine~ include utvonala jelenik csak meg, ahogy az varhato
+      #+BEGIN_SRC bash
+      /usr/bin/c++ -DAPR_DECLARE_STATIC -DAPU_DECLARE_STATIC -DLOG4CXX_STATIC -DXML_STATIC -isystem /home/nbukuli/.conan2/p/b/engineae6618bfc17e/p/include -m64 -O3 -DNDEBUG -std=gnu++14 -MD -MT CMakeFiles/game.dir/src/game.cpp.o -MF CMakeFiles/game.dir/src/game.cpp.o.d -o CMakeFiles/game.dir/src/game.cpp.o -c /home/nbukuli/snippets/conan_advanced_dependencies_toy_example/game/src/game.cpp
+      #+END_SRC
+    - ~*:shared=True~: Az ~engine~ include utvonala jelenik csak meg, ahogy az varhato
+      #+BEGIN_SRC bash
+      /usr/bin/c++  -isystem /home/nbukuli/.conan2/p/b/engin92533e0af1f9e/p/include -m64 -O3 -DNDEBUG -std=gnu++14 -MD -MT CMakeFiles/game.dir/src/game.cpp.o -MF CMakeFiles/game.dir/src/game.cpp.o.d -o CMakeFiles/game.dir/src/game.cpp.o -c /home/nbukuli/snippets/conan_advanced_dependencies_toy_example/game/src/game.cpp
+      #+END_SRC
+  - Linkelesi parancssor:
+    _ ~*:shared=False~: megjelenik az osszes fuggoseg LIBDIR-je (~-L~), a LIBDIR-ek bekerulnek a ~game~ RPATH-aba is, linkelodik az osszes direkt es tranzitiv fuggoseg static libje (~.a~)
+      #+BEGIN_SRC bash
+      /usr/bin/c++ -m64 -O3 -DNDEBUG -m64 CMakeFiles/game.dir/src/game.cpp.o CMakeFiles/game.dir/src/main.cpp.o -o game   -L/home/nbukuli/.conan2/p/b/engineae6618bfc17e/p/lib  -L/home/nbukuli/.conan2/p/b/log4c57a68f22f9e51/p/lib  -L/home/nbukuli/.conan2/p/apr-ua0240d2b6ede2/p/lib  -L/home/nbukuli/.conan2/p/apr-ua0240d2b6ede2/p/lib/apr-util-1  -L/home/nbukuli/.conan2/p/apr759dc8a319f8b/p/lib  -L/home/nbukuli/.conan2/p/libicdfd7be31b6034/p/lib  -L/home/nbukuli/.conan2/p/b/expat3a851153ef8d4/p/lib  -Wl,-rpath,/home/nbukuli/.conan2/p/b/engineae6618bfc17e/p/lib:/home/nbukuli/.conan2/p/b/log4c57a68f22f9e51/p/lib:/home/nbukuli/.conan2/p/apr-ua0240d2b6ede2/p/lib:/home/nbukuli/.conan2/p/apr-ua0240d2b6ede2/p/lib/apr-util-1:/home/nbukuli/.conan2/p/apr759dc8a319f8b/p/lib:/home/nbukuli/.conan2/p/libicdfd7be31b6034/p/lib:/home/nbukuli/.conan2/p/b/expat3a851153ef8d4/p/lib: /home/nbukuli/.conan2/p/b/engineae6618bfc17e/p/lib/libengine.a /home/nbukuli/.conan2/p/b/log4c57a68f22f9e51/p/lib/liblog4cxx.a /home/nbukuli/.conan2/p/apr-ua0240d2b6ede2/p/lib/libaprutil-1.a /home/nbukuli/.conan2/p/libicdfd7be31b6034/p/lib/libiconv.a /home/nbukuli/.conan2/p/libicdfd7be31b6034/p/lib/libcharset.a /home/nbukuli/.conan2/p/b/expat3a851153ef8d4/p/lib/libexpat.a -lm /home/nbukuli/.conan2/p/apr759dc8a319f8b/p/lib/libapr-1.a -lcrypt -ldl -lpthread -lrt
+      #+END_SRC
+    - ~*:shared=True~: megjelenik az osszes fuggoseg LIBDIR-je (~-L~), a LIBDIR-ek bekerulnek a ~game~ RPATH-aba is, csak az ~engine.so~ linkelodik, ahogy varhato
+      #+BEGIN_SRC bash
+      /usr/bin/c++ -m64 -O3 -DNDEBUG -m64 CMakeFiles/game.dir/src/game.cpp.o CMakeFiles/game.dir/src/main.cpp.o -o game   -L/home/nbukuli/.conan2/p/b/engin92533e0af1f9e/p/lib  -L/home/nbukuli/.conan2/p/b/log4c3762b28bed3ae/p/lib  -L/home/nbukuli/.conan2/p/apr-u46962cbae52f2/p/lib  -L/home/nbukuli/.conan2/p/apr-u46962cbae52f2/p/lib/apr-util-1  -L/home/nbukuli/.conan2/p/apr544b7ac059c68/p/lib  -L/home/nbukuli/.conan2/p/libic63a94c7c34484/p/lib  -L/home/nbukuli/.conan2/p/b/expat439bcb6038711/p/lib  -Wl,-rpath,/home/nbukuli/.conan2/p/b/engin92533e0af1f9e/p/lib:/home/nbukuli/.conan2/p/b/log4c3762b28bed3ae/p/lib:/home/nbukuli/.conan2/p/apr-u46962cbae52f2/p/lib:/home/nbukuli/.conan2/p/apr-u46962cbae52f2/p/lib/apr-util-1:/home/nbukuli/.conan2/p/apr544b7ac059c68/p/lib:/home/nbukuli/.conan2/p/libic63a94c7c34484/p/lib:/home/nbukuli/.conan2/p/b/expat439bcb6038711/p/lib: /home/nbukuli/.conan2/p/b/engin92533e0af1f9e/p/lib/libengine.so -lm 
+      #+END_SRC
