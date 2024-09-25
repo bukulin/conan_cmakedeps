@@ -25,7 +25,7 @@ class engineRecipe(ConanFile):
     }
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    exports_sources = "CMakeLists.txt", "src/*", "include/*"
+    exports_sources = "CMakeLists.txt", "src/*", "include/*", "test/*"
 
     def requirements(self):
         self.requires("log4cxx/1.2.0")
